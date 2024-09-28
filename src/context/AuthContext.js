@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import api from '../services/api';
-import {jwtDecode} from 'jwt-decode';  // Ensure correct import
+import { jwtDecode } from 'jwt-decode';
 
 const AuthContext = createContext();
 
@@ -43,6 +43,16 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const register = async (email, password, fullName) => {
+    try {
+      await api.post('/api/auth/register', { email, password, fullName });
+      return true; // Registration was successful
+    } catch (error) {
+      console.error('Registration error:', error);
+      return false; // Registration failed
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     delete api.defaults.headers.common['Authorization'];
@@ -51,7 +61,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );
