@@ -43,11 +43,24 @@ const HomePage = () => {
   };
 
   // Handle adding an item to the cart
-  const addToCart = async (itemId) => {
+  const addToCart = async (itemId, stock) => {
     try {
       if (!token || !userEmail) {
         alert('You need to log in to add items to your cart.');
         navigate('/login');
+        return;
+      }
+
+      // Check if the stock is sufficient
+      const itemInCart = items.find(item => item.id === itemId);
+      if (!itemInCart || stock <= 0) {
+        alert('Item is out of stock.');
+        return;
+      }
+
+      // If the quantity is greater than available stock, alert the user
+      if (itemInCart.stock < 1) { // Assuming stock is a property in your item
+        alert('Not enough stock available.');
         return;
       }
 
@@ -160,7 +173,7 @@ const HomePage = () => {
                   <span className="font-bold">${item.price.toFixed(2)}</span>
                   {token ? (
                     <button
-                      onClick={() => addToCart(item.id)}
+                      onClick={() => addToCart(item.id, item.stock)} // Pass stock to the function
                       className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                     >
                       Add to Cart

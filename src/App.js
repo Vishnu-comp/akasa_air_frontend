@@ -8,7 +8,8 @@ import Orders from './pages/Orders';
 import HomePage from './pages/Homepage'; // Assuming you want HomePage here
 import PrivateRoute from './components/PrivateRoute'; 
 import { AuthProvider } from './context/AuthContext';
-import { CartProvider } from './context/CartContext'; // Import CartProvider
+import { CartProvider } from './context/CartContext';
+import Inventory from './pages/Inventory'; // Import CartProvider
 //import NotFound from './pages/NotFound'; // For 404 handling
 
 function App() {
@@ -24,6 +25,8 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/inventory" element={<Inventory />} />
+
 
                 {/* Private Routes */}
                 <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />

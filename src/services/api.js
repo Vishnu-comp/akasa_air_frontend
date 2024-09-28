@@ -4,19 +4,28 @@ const api = axios.create({
   baseURL: 'http://localhost:8080',
 });
 
+// Request Interceptor
 api.interceptors.request.use(config => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers['Authorization'] = `Bearer ${token}`;
-    console.log('Request headers:', config.headers);
+  // Check if the request URL includes '/api/inventory'
+  if (!config.url.includes('/api/inventory')) {
+    // Only add the token for non-inventory requests
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+      console.log('Request headers with token:', config.headers);
+    } else {
+      console.log('No token found in localStorage');
+    }
   } else {
-    console.log('No token found in localStorage');
+    // For inventory routes, no token will be added
+    console.log('Skipping token for inventory management request.');
   }
   return config;
 }, error => {
   return Promise.reject(error);
 });
 
+// Response Interceptor
 api.interceptors.response.use(response => {
   return response;
 }, error => {
