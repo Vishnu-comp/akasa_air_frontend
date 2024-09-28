@@ -1,6 +1,8 @@
+
+
 // import React, { useState, useEffect } from 'react';
 // import api from '../services/api';
-// import {jwtDecode} from 'jwt-decode';
+// import { jwtDecode } from 'jwt-decode';
 
 // function Cart() {
 //   const [cart, setCart] = useState({ items: [] });
@@ -29,8 +31,8 @@
 //     try {
 //       const response = await api.get(`/api/cart/user/${userEmail}`, {
 //         headers: {
-//           Authorization: `Bearer ${token}`
-//         }
+//           Authorization: `Bearer ${token}`,
+//         },
 //       });
 //       setCart(response.data);
 //     } catch (error) {
@@ -43,10 +45,10 @@
 //     try {
 //       await api.delete(`/api/cart/remove/${userEmail}/${itemId}`, {
 //         headers: {
-//           Authorization: `Bearer ${token}`
-//         }
+//           Authorization: `Bearer ${token}`,
+//         },
 //       });
-//       fetchCart();
+//       fetchCart(); // Refresh cart after item is removed
 //     } catch (error) {
 //       console.error('Error removing item from cart:', error);
 //       setError('Failed to remove item from cart.');
@@ -55,13 +57,28 @@
 
 //   const checkout = async () => {
 //     try {
-//       await api.post('/api/order/checkout', { items: cart.items }, {
+//       const token = localStorage.getItem('token');
+//       const decodedToken = jwtDecode(token); // Get userEmail from the token
+//       const userEmail = decodedToken.sub;
+
+//       // Create an array of itemIds from the cart items
+//       const itemIds = cart.items.map(item => item.itemId); // Assuming item.itemId is correct
+//       const totalAmount = cart.items.reduce((total, item) => total + item.price * item.quantity, 0);
+
+//       // Send the request to the backend without manually setting orderDate and status
+//       const response = await api.post('/api/order/checkout', {
+//         userEmail,       // Add userEmail to the request body
+//         itemIds,         // Send itemIds to the backend
+//         totalAmount      // Calculate and send totalAmount
+//       }, {
 //         headers: {
-//           Authorization: `Bearer ${token}`
-//         }
+//           Authorization: `Bearer ${token}`,  // Ensure token is sent for authentication
+//         },
 //       });
+
+//       console.log('Order placed:', response.data); // Check if the response contains the correct data
 //       alert('Order placed successfully!');
-//       setCart({ items: [] });
+//       setCart({ items: [] }); // Clear the cart after successful order placement
 //     } catch (error) {
 //       console.error('Error during checkout:', error);
 //       setError('Checkout failed. Please try again.');
@@ -78,13 +95,21 @@
 //         <>
 //           <div className="bg-white p-6 rounded-lg shadow-md">
 //             {cart.items.map((item) => (
-//               <div key={item.id} className="flex justify-between items-center mb-4">
-//                 <div>
-//                   <h2 className="text-xl font-semibold">{item.name}</h2>
-//                   <p className="text-gray-600">Quantity: {item.quantity}</p>
+//               <div key={item.itemId} className="flex justify-between items-center mb-4">
+//                 <div className="flex items-center">
+//                   {/* Add Image here */}
+//                   <img 
+//                     src={item.imageUrl} 
+//                     alt={item.name} 
+//                     className="w-24 h-24 object-cover mr-4" 
+//                   />
+//                   <div>
+//                     <h2 className="text-xl font-semibold">{item.name}</h2>
+//                     <p className="text-gray-600">Quantity: {item.quantity}</p>
+//                   </div>
 //                 </div>
 //                 <div>
-//                   <p className="text-lg font-bold">${(item.price * item.quantity).toFixed(2)}</p>
+//                   <p className="text-lg font-bold">Rs{(item.price * item.quantity).toFixed(2)}</p>
 //                   <button
 //                     onClick={() => removeFromCart(item.itemId)}
 //                     className="text-red-500 hover:text-red-700"
@@ -97,7 +122,7 @@
 //           </div>
 //           <div className="mt-6 text-right">
 //             <p className="text-xl font-bold mb-4">
-//               Total: ${cart.items.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)}
+//               Total: Rs{cart.items.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)}
 //             </p>
 //             <button
 //               onClick={checkout}
@@ -172,26 +197,27 @@ function Cart() {
 
   const checkout = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const decodedToken = jwtDecode(token); // Get userEmail from the token
-      const userEmail = decodedToken.sub;
+      const itemIds = cart.items.map((item) => item.itemId);
+      const totalAmount = cart.items.reduce(
+        (total, item) => total + item.price * item.quantity,
+        0
+      );
 
-      // Create an array of itemIds from the cart items
-      const itemIds = cart.items.map(item => item.itemId); // Assuming item.itemId is correct
-      const totalAmount = cart.items.reduce((total, item) => total + item.price * item.quantity, 0);
-
-      // Send the request to the backend without manually setting orderDate and status
-      const response = await api.post('/api/order/checkout', {
-        userEmail,       // Add userEmail to the request body
-        itemIds,         // Send itemIds to the backend
-        totalAmount      // Calculate and send totalAmount
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,  // Ensure token is sent for authentication
+      const response = await api.post(
+        '/api/order/checkout',
+        {
+          userEmail,
+          itemIds,
+          totalAmount,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      console.log('Order placed:', response.data); // Check if the response contains the correct data
+      console.log('Order placed:', response.data);
       alert('Order placed successfully!');
       setCart({ items: [] }); // Clear the cart after successful order placement
     } catch (error) {
@@ -201,51 +227,74 @@ function Cart() {
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6">Your Cart</h1>
-      {error && <p className="text-red-500">{error}</p>}
+    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
+      <h1 className="text-3xl font-bold mb-4 text-center">Your Cart</h1>
+      {error && <p className="text-red-500 text-center">{error}</p>}
       {cart.items.length === 0 ? (
-        <p>Your cart is empty.</p>
+        <p className="text-center">Your cart is empty.</p>
       ) : (
         <>
-          <div className="bg-white p-6 rounded-lg shadow-md">
+          {/* Static Address Section */}
+          <div className="bg-gray-100 p-4 rounded-lg mb-4">
+            <h2 className="text-lg font-semibold">Delivery Address</h2>
+            <p className="font-medium">1342 Morris Street</p>
+            <p className="text-sm text-gray-500">Delivery Time: 40 mins | Distance: 5 km</p>
+          </div>
+
+          {/* Cart Items */}
+          <div className="bg-gray-100 p-4 rounded-lg mb-4">
             {cart.items.map((item) => (
-              <div key={item.itemId} className="flex justify-between items-center mb-4">
+              <div key={item.itemId} className="flex justify-between items-center mb-4 border-b pb-2">
                 <div className="flex items-center">
-                  {/* Add Image here */}
-                  <img 
-                    src={item.imageUrl} 
-                    alt={item.name} 
-                    className="w-24 h-24 object-cover mr-4" 
+                  <img
+                    src={item.imageUrl}
+                    alt={item.name}
+                    className="w-20 h-20 object-cover rounded-md mr-4"
                   />
                   <div>
-                    <h2 className="text-xl font-semibold">{item.name}</h2>
-                    <p className="text-gray-600">Quantity: {item.quantity}</p>
+                    <h2 className="text-lg font-semibold">{item.name}</h2>
+                    <p className="text-gray-600">Extra: Cheese</p>
                   </div>
                 </div>
-                <div>
-                  <p className="text-lg font-bold">${(item.price * item.quantity).toFixed(2)}</p>
+                <div className="text-right">
+                  <p className="text-xl font-bold">Rs{(item.price * item.quantity).toFixed(2)}</p>
                   <button
                     onClick={() => removeFromCart(item.itemId)}
-                    className="text-red-500 hover:text-red-700"
+                    className="text-red-500 hover:text-red-700 ml-2"
                   >
-                    Remove
+                    X
                   </button>
                 </div>
               </div>
             ))}
           </div>
-          <div className="mt-6 text-right">
-            <p className="text-xl font-bold mb-4">
-              Total: ${cart.items.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)}
-            </p>
-            <button
-              onClick={checkout}
-              className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600"
-            >
-              Checkout
-            </button>
+
+          {/* Total Section */}
+          <div className="bg-gray-100 p-4 rounded-lg">
+            <div className="flex justify-between mb-2">
+              <span className="text-gray-600">Sub Total</span>
+              <span className="font-bold">
+                Rs{cart.items.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)}
+              </span>
+            </div>
+            <div className="flex justify-between mb-2">
+              <span className="text-gray-600">Delivery Fee</span>
+              <span className="font-bold">Rs{9}</span> {/* Example static delivery fee */}
+            </div>
+            <div className="flex justify-between font-semibold">
+              <span>Total</span>
+              <span className="text-xl font-bold">
+                Rs{(cart.items.reduce((total, item) => total + item.price * item.quantity, 0) + 9).toFixed(2)} {/* Adjust total calculation */}
+              </span>
+            </div>
           </div>
+          
+          <button
+            onClick={checkout}
+            className="w-full bg-orange-500 text-white font-semibold py-3 rounded-lg mt-4 hover:bg-orange-600 transition duration-300"
+          >
+            Check Out
+          </button>
         </>
       )}
     </div>

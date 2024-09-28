@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import api from '../services/api';
+import {jwtDecode} from 'jwt-decode';  // Ensure correct import
 
 const AuthContext = createContext();
 
@@ -14,8 +15,15 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      setIsAuthenticated(true);
+      try {
+        const decodedToken = jwtDecode(token);
+        setUser(decodedToken);
+        setIsAuthenticated(true);
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      } catch (error) {
+        console.error('Error decoding token', error);
+        logout();
+      }
     }
   }, []);
 
@@ -23,22 +31,14 @@ export function AuthProvider({ children }) {
     try {
       const response = await api.post('/api/auth/login', { email, password });
       const { token } = response.data;
-      localStorage.setItem('token', token);
+      localStorage.setItem('token', token);  // Store the token in localStorage
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      const decodedToken = jwtDecode(token);
+      setUser(decodedToken);
       setIsAuthenticated(true);
       return true;
     } catch (error) {
       console.error('Login error:', error);
-      return false;
-    }
-  };
-
-  const register = async (email, password, fullName) => {
-    try {
-      await api.post('/api/auth/register', { email, password, fullName });
-      return true;
-    } catch (error) {
-      console.error('Registration error:', error);
       return false;
     }
   };
@@ -50,13 +50,9 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
-  const value = {
-    user,
-    isAuthenticated,
-    login,
-    register,
-    logout,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
