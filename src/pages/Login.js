@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom'; // Use useNavigate instead of useHistory
+import { useNavigate } from 'react-router-dom'; 
+import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
+import 'react-toastify/dist/ReactToastify.css'; // Import styles for toast notifications
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login } = useAuth();
-  const navigate = useNavigate(); // useNavigate hook
+  const navigate = useNavigate(); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const success = await login(email, password);
     if (success) {
-      navigate('/'); // Use navigate instead of history.push
+      toast.success('Login successful!'); // Toast notification for success
+      navigate('/'); 
     } else {
-      alert('Login failed. Please check your credentials.');
+      toast.error('Login failed. Please check your credentials.'); // Toast notification for error
     }
   };
 
@@ -48,6 +51,7 @@ function Login() {
           Login
         </button>
       </form>
+      <ToastContainer /> {/* Add the ToastContainer here */}
     </div>
   );
 }

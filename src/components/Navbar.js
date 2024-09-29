@@ -1,12 +1,14 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext'; // Use useCart hook instead
 import { FaShoppingCart, FaUserCircle } from 'react-icons/fa';
 
 const Navbar = () => {
-  const { isAuthenticated, logout } = useAuth();
-  const { cartItems } = useCart(); // Get cart items using useCart
+  const { isAuthenticated, logout, user } = useAuth();
+ 
+ 
+  const { cartItems } = useCart();
   const navigate = useNavigate();
 
   const goToCart = () => {
@@ -34,7 +36,6 @@ const Navbar = () => {
                 <div className="relative group mx-2">
                   <FaUserCircle className="text-gray-600 hover:text-orange-500" size={24} />
                   <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-                    <Link to="/profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</Link>
                     <Link to="/orders" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Previous Orders</Link>
                     <button 
                       onClick={logout} 
@@ -44,6 +45,7 @@ const Navbar = () => {
                     </button>
                   </div>
                 </div>
+                <span className="mx-2 text-gray-700">{user?.sub}</span> {/* Use email instead of fullName */}
               </>
             ) : (
               <>

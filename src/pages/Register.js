@@ -1,22 +1,48 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom'; // Use useNavigate instead of useHistory
+import { useNavigate } from 'react-router-dom';
+import api from '../services/api'; 
+import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
+import 'react-toastify/dist/ReactToastify.css'; // Import styles for toast notifications
 
 function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [emailError, setEmailError] = useState(''); 
   const { register } = useAuth();
-  const navigate = useNavigate(); // useNavigate hook
+  const navigate = useNavigate();
+
+  // Function to check if email already exists
+  const checkEmailExists = async () => {
+    try {
+      const response = await api.get('/api/auth/check-email', { params: { email } });
+      return response.data; // true if email exists, false otherwise
+    } catch (error) {
+      console.error('Error checking email:', error);
+      return false; 
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Check if email already exists before registration
+    const emailExists = await checkEmailExists();
+    if (emailExists) {
+      setEmailError('Email is already registered.');
+      toast.error('Email is already registered.'); // Toast for existing email
+      return; 
+    }
+    
+    setEmailError(''); // Clear any previous error
+
     const success = await register(email, password, fullName);
     if (success) {
-      alert('Registration successful! Please login.');
-      navigate('/login'); // Use navigate instead of history.push
+      toast.success('Registration successful! Please login.'); // Toast for success
+      navigate('/login');
     } else {
-      alert('Registration failed. Please try again.');
+      toast.error('Registration failed. Please try again.'); // Toast for failure
     }
   };
 
@@ -42,9 +68,10 @@ function Register() {
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg"
+            className={`w-full px-3 py-2 border rounded-lg ${emailError ? 'border-red-500' : ''}`}
             required
           />
+          {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
         </div>
         <div className="mb-4">
           <label htmlFor="password" className="block text-gray-700 mb-2">Password</label>
@@ -61,6 +88,7 @@ function Register() {
           Register
         </button>
       </form>
+      <ToastContainer /> {/* Add the ToastContainer here */}
     </div>
   );
 }

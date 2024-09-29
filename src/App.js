@@ -12,12 +12,42 @@ import { CartProvider } from './context/CartContext';
 import Inventory from './pages/Inventory'; // Import CartProvider
 //import NotFound from './pages/NotFound'; // For 404 handling
 
+// function App() {
+//   return (
+//     <AuthProvider>
+//       <CartProvider> {/* Ensure CartProvider wraps the app */}
+//         <Router>
+//           <div className="min-h-screen bg-gray-100">
+//             <Navbar />
+//             <div className="container mx-auto px-4 py-8">
+//               <Routes>
+//                 {/* Public Routes */}
+//                 <Route path="/" element={<HomePage />} />
+//                 <Route path="/login" element={<Login />} />
+//                 <Route path="/register" element={<Register />} />
+//                 <Route path="/inventory" element={<Inventory />} />
+
+
+//                 {/* Private Routes */}
+//                 <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
+//                 <Route path="/orders" element={<PrivateRoute><Orders /></PrivateRoute>} />
+
+//                 {/* 404 Route */}
+//                 {/* <Route path="*" element={<NotFound />} /> */}
+//               </Routes>
+//             </div>
+//           </div>
+//         </Router>
+//       </CartProvider>
+//     </AuthProvider>
+//   );
+// }
 function App() {
   return (
     <AuthProvider>
-      <CartProvider> {/* Ensure CartProvider wraps the app */}
+      <CartProvider>
         <Router>
-          <div className="min-h-screen bg-gray-100">
+          <div className="min-h-screen"> {/* Remove bg-gray-100 */}
             <Navbar />
             <div className="container mx-auto px-4 py-8">
               <Routes>
@@ -26,7 +56,6 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/inventory" element={<Inventory />} />
-
 
                 {/* Private Routes */}
                 <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
@@ -42,5 +71,7 @@ function App() {
     </AuthProvider>
   );
 }
+
+
 
 export default App;

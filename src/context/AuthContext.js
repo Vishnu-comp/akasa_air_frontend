@@ -11,6 +11,7 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [error, setError] = useState(null); // For error handling
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -20,6 +21,9 @@ export function AuthProvider({ children }) {
         setUser(decodedToken);
         setIsAuthenticated(true);
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        
+        
+  
       } catch (error) {
         console.error('Error decoding token', error);
         logout();
@@ -31,10 +35,10 @@ export function AuthProvider({ children }) {
     try {
       const response = await api.post('/api/auth/login', { email, password });
       const { token } = response.data;
-      localStorage.setItem('token', token);  // Store the token in localStorage
+      localStorage.setItem('token', token);
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       const decodedToken = jwtDecode(token);
-      setUser(decodedToken);
+      setUser(decodedToken); // Ensure this contains fullName
       setIsAuthenticated(true);
       return true;
     } catch (error) {
@@ -42,16 +46,19 @@ export function AuthProvider({ children }) {
       return false;
     }
   };
-
+  
   const register = async (email, password, fullName) => {
+    setError(null); // Reset error state
     try {
-      await api.post('/api/auth/register', { email, password, fullName });
-      return true; // Registration was successful
+        await api.post('/api/auth/register', { email, password, fullName });
+        return true; 
     } catch (error) {
-      console.error('Registration error:', error);
-      return false; // Registration failed
+        console.error('Registration error:', error);
+        setError('Registration failed. Please try again.');
+        return false; 
     }
-  };
+};
+
 
   const logout = () => {
     localStorage.removeItem('token');
@@ -61,7 +68,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout, register }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, logout, register, error }}>
       {children}
     </AuthContext.Provider>
   );

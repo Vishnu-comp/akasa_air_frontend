@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Inventory = () => {
   const [items, setItems] = useState([]);
@@ -24,8 +26,10 @@ const Inventory = () => {
     try {
       const response = await api.get('/api/inventory/all');
       setItems(response.data);
+      toast.success('Items fetched successfully!'); // Toast notification
     } catch (error) {
       console.error('Error fetching items:', error);
+      toast.error('Failed to fetch items.'); // Toast notification
     }
   };
 
@@ -36,11 +40,13 @@ const Inventory = () => {
       if (isEdit) {
         // Update item
         await api.put(`/api/inventory/update`, { ...form, id: editItemId });
+        toast.success('Item updated successfully!'); // Toast notification
         setIsEdit(false);
         setEditItemId(null);
       } else {
         // Add new item
         await api.post('/api/inventory/add', form);
+        toast.success('Item added successfully!'); // Toast notification
       }
       setForm({
         name: '',
@@ -53,6 +59,7 @@ const Inventory = () => {
       fetchItems(); // Refresh the list after adding/updating an item
     } catch (error) {
       console.error('Error adding/updating item:', error);
+      toast.error('Failed to add/update item.'); // Toast notification
     }
   };
 
@@ -60,9 +67,11 @@ const Inventory = () => {
   const handleDeleteItem = async (id) => {
     try {
       await api.delete(`/api/inventory/delete/${id}`);
+      toast.success('Item deleted successfully!'); // Toast notification
       fetchItems(); // Refresh the list after deletion
     } catch (error) {
       console.error('Error deleting item:', error);
+      toast.error('Failed to delete item.'); // Toast notification
     }
   };
 
@@ -82,10 +91,11 @@ const Inventory = () => {
 
   return (
     <div className="container mx-auto p-8">
-      <h1 className="text-2xl font-bold mb-6">Inventory Management</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">Inventory Management</h1>
 
       {/* Item Form */}
-      <form className="mb-6" onSubmit={handleAddItem}>
+      <form className="mb-6 shadow-lg p-6 bg-white rounded-lg" onSubmit={handleAddItem}>
+        <h2 className="text-2xl font-semibold mb-4">{isEdit ? 'Edit Item' : 'Add Item'}</h2>
         <div className="mb-4">
           <label className="block text-sm font-bold mb-2">Item Name</label>
           <input
@@ -160,7 +170,7 @@ const Inventory = () => {
       </form>
 
       {/* Item List */}
-      <table className="table-auto w-full mb-6">
+      <table className="table-auto w-full mb-6 shadow-lg bg-white rounded-lg">
         <thead>
           <tr className="bg-gray-200">
             <th className="px-4 py-2">Image</th>
@@ -201,6 +211,8 @@ const Inventory = () => {
           ))}
         </tbody>
       </table>
+
+      <ToastContainer /> {/* Add the ToastContainer here */}
     </div>
   );
 };

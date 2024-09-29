@@ -1,134 +1,115 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+import { FaStar, FaUtensils, FaMotorcycle, FaShoppingCart } from 'react-icons/fa';
 import api from '../services/api';
-import { jwtDecode } from 'jwt-decode'; // Corrected import
-import img1 from '../asset/img1.png';
-import img2 from '../asset/img2.png';
-import img3 from '../asset/img3.png';
-import Slider from 'react-slick'; // Import React Slick
-import { FaHeart } from 'react-icons/fa'; // Heart icon for like button
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const HomePage = () => {
-  const [items, setItems] = useState([]); // Store available items
-  const [itemAdded, setItemAdded] = useState(false); // Track if an item has been added to the cart
+  const [items, setItems] = useState([]);
+  const [itemAdded, setItemAdded] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const navigate = useNavigate();
-  const token = localStorage.getItem('token'); // Retrieve JWT token from localStorage
+  const token = localStorage.getItem('token');
   let userEmail = '';
 
-  // Decode JWT token to get user email
   if (token) {
     try {
       const decodedToken = jwtDecode(token);
-      userEmail = decodedToken.sub; // Assuming 'sub' contains the user's email
+      userEmail = decodedToken.sub;
     } catch (error) {
       console.error('Error decoding token:', error);
     }
   }
 
-  // Fetch available items from the inventory
   useEffect(() => {
     fetchItems();
   }, []);
 
   const fetchItems = async () => {
     try {
-      // Public request: no token needed to fetch items
       const response = await api.get('/api/inventory/all');
-      setItems(response.data); // Update items state
+      setItems(response.data);
     } catch (error) {
       console.error('Error fetching items:', error);
-      alert('Failed to load items. Please try again later.');
+      toast.error('Failed to load items. Please try again later.');
     }
   };
 
-  // Handle adding an item to the cart
   const addToCart = async (itemId, stock) => {
     try {
       if (!token || !userEmail) {
-        alert('You need to log in to add items to your cart.');
+        toast.warn('You need to log in to add items to your cart.');
         navigate('/login');
         return;
       }
 
-      // Check if the stock is sufficient
-      const itemInCart = items.find(item => item.id === itemId);
-      if (!itemInCart || stock <= 0) {
-        alert('Item is out of stock.');
+      if (stock <= 0) {
+        toast.error('Item is out of stock.');
         return;
       }
 
-      // If the quantity is greater than available stock, alert the user
-      if (itemInCart.stock < 1) { // Assuming stock is a property in your item
-        alert('Not enough stock available.');
-        return;
-      }
-
-      // Send a request to add the item to the user's cart
-      const response = await api.post(
+      await api.post(
         `/api/cart/add/${userEmail}`,
         { itemId, quantity: 1 },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Ensure token is included
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
-      setItemAdded(true); // Mark item as added to cart
-      alert('Item added to cart!');
+      setItemAdded(true);
+      toast.success('Item added to cart!');
     } catch (error) {
       console.error('Error adding to cart:', error);
       if (error.response && error.response.status === 403) {
-        alert('Permission denied: You do not have access to this resource.');
+        toast.error('Permission denied: You do not have access to this resource.');
       } else {
-        alert(`Error adding to cart: ${error.message}`);
+        toast.error(`Error adding to cart: ${error.message}`);
       }
     }
   };
 
-  // Navigate to the cart page
-  const goToCart = () => {
-    navigate('/cart');
-  };
+  const goToCart = () => navigate('/cart');
+  const inventorylink = () => navigate('/inventory');
 
-  // Navigate to the orders page to place an order
-  const order = () => {
-    navigate('/orders');
-  };
-
-  // Slider settings
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 3000,
-  };
-
-  // Array of promotion images for the slider
-  const promotionImages = [img1, img2, img3];
+  // const filteredItems = items.filter(item => 
+  //   (selectedCategory === 'All' || item.category === selectedCategory) &&
+  //   item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  // );
+  const categories = ['All', 'Veg', 'Mexican', 'Japanese', 'Non-Veg', 'Lunch', 'Drink'];
+  const services = [
+    {
+      icon: <FaUtensils size={40} className="text-orange-500" />,
+      title: 'Quality Food',
+      description: 'FoodZone is all about family, feeling good, celebrating life, and showing love with good food.',
+    },
+    {
+      icon: <FaStar size={40} className="text-orange-500" />,
+      title: 'Super Taste',
+      description: 'FoodZone is all about family, feeling good, celebrating life, and showing love with good food.',
+    },
+    {
+      icon: <FaShoppingCart size={40} className="text-orange-500" />,
+      title: 'Online Order',
+      description: 'FoodZone is all about family, feeling good, celebrating life, and showing love with good food.',
+    },
+    {
+      icon: <FaMotorcycle size={40} className="text-orange-500" />,
+      title: 'Home Delivery',
+      description: 'FoodZone is all about family, feeling good, celebrating life, and showing love with good food.',
+    },
+  ];
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Promotion Carousel */}
-      <div className="mb-8">
-        <Slider {...sliderSettings}>
-          {promotionImages.map((image, index) => (
-            <div key={index}>
-              <img
-                src={image}
-                alt={`Promotion ${index + 1}`}
-                className="w-full h-80 object-cover rounded-lg"
-              />
-            </div>
-          ))}
-        </Slider>
-      </div>
-
-      {/* Search Input */}
+    <div className='min-h-screen bg-gray-100'>
+      <ToastContainer />
+ <div className="container mx-auto px-4 py-8">
+      <HeroSection inventorylink={inventorylink} />
       <div className="mb-8">
         <div className="relative">
           <input
@@ -149,65 +130,146 @@ const HomePage = () => {
           </svg>
         </div>
       </div>
-
-      {/* Filter Buttons */}
-      <div className="flex space-x-4 mb-8 overflow-x-auto pb-2">
-        {['Nearby', 'Promotion', 'Newcomers', 'Best Seller', 'Top Rated', 'All'].map((filter) => (
-          <button key={filter} className="px-4 py-2 bg-gray-200 rounded-full whitespace-nowrap">
-            {filter}
-          </button>
-        ))}
-      </div>
-
-      {/* Items Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-        {items
-          .filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
-          .map((item) => (
-            <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-              <img src={item.imageUrl} alt={item.name} className="w-full h-40 object-cover" />
-              <div className="p-4">
-                <h3 className="font-semibold text-lg mb-1">{item.name}</h3>
-                <p className="text-gray-600 text-sm mb-2">{item.category}</p>
-                <div className="flex justify-between items-center">
-                  <span className="font-bold">${item.price.toFixed(2)}</span>
-                  {token ? (
-                    <button
-                      onClick={() => addToCart(item.id, item.stock)} // Pass stock to the function
-                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                    >
-                      Add to Cart
-                    </button>
-                  ) : (
-                    <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
-                      <FaHeart size={18} className="inline mr-1" /> Like
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-      </div>
-
-      {/* Order and Cart Buttons */}
-      <div>
-        <button
-          onClick={order}
-          className="mt-6 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-        >
-          Order
-        </button>
-      </div>
-      {itemAdded && (
-        <button
-          onClick={goToCart}
-          className="mt-6 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-        >
-          Go to Cart
-        </button>
-      )}
+      <CategoryMenu categories={categories} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
+      <ItemsGrid items={items} searchQuery={searchQuery} selectedCategory={selectedCategory} addToCart={addToCart} />
+      <ServicesSection services={services} />
+      <ReservationSection />
+      {itemAdded && <GoToCartButton goToCart={goToCart} />}
     </div>
+    </div>
+   
   );
 };
+
+const HeroSection = ({ inventorylink }) => (
+  <div className="bg-white py-12 px-4 sm:px-6 lg:px-8 rounded-lg shadow-lg mb-8">
+    <div className="max-w-7xl mx-auto">
+      <div className="flex flex-col md:flex-row items-center justify-between">
+        <div className="md:w-1/2 mb-8 md:mb-0">
+          <h2 className="text-5xl font-bold mb-4">
+            Simple <br />
+            <span className="text-orange-500">&amp; Tasty</span>
+          </h2>
+          <p className="text-gray-600 mb-6 max-w-md">
+            Treat your meat to something incredible! Our meat rubs are made with love and crafted with only the best spices money can buy. We package and ship our rubs directly to you, ensuring your next meal is one to remember.
+          </p>
+          <div className="space-x-4">
+            <button className="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 transition duration-300">
+              ADD TO CART
+            </button>
+            <button onClick={inventorylink} className="border border-orange-500 text-orange-500 px-6 py-2 rounded-md hover:bg-orange-50 transition duration-300">
+              VIEW DETAIL
+            </button>
+          </div>
+        </div>
+        <div className="md:w-1/2 relative">
+          <img
+            src="https://images.rawpixel.com/image_png_social_square/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA5L3Jhd3BpeGVsb2ZmaWNlMThfcGhvdG9fb2ZfbWluaW1hbF9maXNoX3N0ZWFrX3dpdGhfc2FsYWRfaXNvbGF0ZV9kYWZhNjlhZi03YjMwLTRiMDUtYmI2OS1iOWIyZWZhOGQ4NGYucG5n.png"
+            alt="Delicious salad with grilled salmon"
+            className="rounded-full w-full max-w-md mx-auto"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const CategoryMenu = ({ categories, selectedCategory, setSelectedCategory }) => (
+  <div className="flex justify-center space-x-6 mb-8 text-lg font-bold text-gray-700">
+    {categories.map((category, index) => (
+      <button 
+        key={index} 
+        className={`hover:text-orange-600 focus:text-orange-600 ${selectedCategory === category ? 'text-orange-600' : ''}`}
+        onClick={() => setSelectedCategory(category)}
+      >
+        {category}
+      </button>
+    ))}
+  </div>
+);
+
+const ItemsGrid = ({ items, searchQuery,selectedCategory, addToCart }) => (
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-orange-100 p-6 rounded-lg mb-8">
+    {items
+      .filter(item => (selectedCategory === 'All' || item.category === selectedCategory) &&
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()))
+      .map(item => (
+        <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-105 transition duration-300">
+          <img src={item.imageUrl} alt={item.name} className="w-full h-40 object-cover" />
+          <div className="p-4">
+            <h3 className="font-semibold text-lg mb-1">{item.name}</h3>
+            <h3 className="font-semibold text-lg mb-1">{item.category}</h3>
+            <div className="flex items-center mb-1">
+              {[...Array(5)].map((_, index) => (
+                <FaStar key={index} color={index < item.rating ? "#ffc107" : "#e4e5e9"} />
+              ))}
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-orange-600">Rs {item.price.toFixed(2)}</span>
+              {item.stock > 0 ? (
+                <button
+                  onClick={() => addToCart(item.id, item.stock)}
+                  className="bg-orange-600 text-white px-4 py-2 rounded hover:bg-blue-600"
+                >
+                  Add to Cart
+                </button>
+              ) : (
+                <span className="text-red-600 font-bold">Out of Stock</span>
+              )}
+            </div>
+          </div>
+        </div>
+      ))}
+  </div>
+);
+
+const ServicesSection = ({ services }) => (
+  <div className="bg-orange-50 py-12 rounded-lg mb-8">
+    <h2 className="text-center text-4xl font-bold mb-6">
+      We Provide These <span className="text-orange-500">Services</span>
+    </h2>
+    <p className="text-center text-gray-600 mb-10 max-w-xl mx-auto">
+      FoodZone is all about family, feeling good, celebrating life, and showing love with good food.
+      FoodZone is a small, woman and family-owned company and promises to stay that way.
+    </p>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4 sm:px-8 lg:px-16">
+      {services.map((service, index) => (
+        <div key={index} className="bg-white p-8 rounded-lg shadow-lg flex flex-col items-center text-center">
+          <div className="mb-4">{service.icon}</div>
+          <h3 className="text-xl font-semibold mb-2 text-gray-800">{service.title}</h3>
+          <p className="text-gray-600">{service.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const ReservationSection = () => (
+  <div className="bg-white p-8 rounded-lg shadow-lg mb-8">
+    <h2 className="text-3xl font-bold text-center mb-4">
+      Do You Have Any Plan Today? Reserve your <span className="text-orange-600">Delicious Foods</span>
+    </h2>
+    <p className="text-center text-gray-600 mb-6">
+      They also have a love of the past and focus their product lines around ancient grain ingredients
+      and traditional food preparation.
+    </p>
+    <div className="flex justify-center">
+      <button className="bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700">
+        Make Reservation
+      </button>
+    </div>
+  </div>
+);
+
+const GoToCartButton = ({ goToCart }) => (
+  <div className="text-center">
+    <button
+      onClick={goToCart}
+      className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+    >
+      Go to Cart
+    </button>
+  </div>
+);
 
 export default HomePage;

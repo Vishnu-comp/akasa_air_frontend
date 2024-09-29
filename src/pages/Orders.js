@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import { jwtDecode } from 'jwt-decode';
 import { useAuth } from '../context/AuthContext';
+import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
+import 'react-toastify/dist/ReactToastify.css'; // Import styles for toast notifications
 
 function Orders() {
     const [orders, setOrders] = useState([]);
@@ -19,6 +21,7 @@ function Orders() {
         } catch (error) {
             console.error('Error decoding token:', error);
             setError('Invalid token. Please log in again.');
+            toast.error('Invalid token. Please log in again.'); // Notify user about invalid token
         }
     }
 
@@ -26,6 +29,7 @@ function Orders() {
         const fetchOrders = async () => {
             if (!isAuthenticated) {
                 setError('Please log in to view your orders.');
+                toast.warn('Please log in to view your orders.'); // Notify user to log in
                 setLoading(false);
                 return;
             }
@@ -41,24 +45,29 @@ function Orders() {
                     });
                     console.log('Fetched orders:', response.data);
                     setOrders(response.data || []);
+                    toast.success('Orders fetched successfully!'); // Notify successful fetch
                 } catch (error) {
                     console.error('Error fetching orders:', error);
                     if (error.response) {
                         console.error('Response error:', error.response.data);
                         if (error.response.status === 403) {
                             setError('You are not authorized to view these orders. Please try logging in again.');
+                            toast.error('You are not authorized to view these orders. Please log in again.'); // Notify authorization error
                             logout(); // Optionally log the user out
                         } else {
                             setError('Failed to fetch orders. Please try again.');
+                            toast.error('Failed to fetch orders. Please try again.'); // Notify fetch failure
                         }
                     } else {
                         setError('Failed to fetch orders. Please check your connection.');
+                        toast.error('Failed to fetch orders. Please check your connection.'); // Notify connection error
                     }
                 } finally {
                     setLoading(false);
                 }
             } else {
                 setError('User email not found. Please log in again.');
+                toast.error('User email not found. Please log in again.'); // Notify missing email
                 setLoading(false);
             }
         };
@@ -90,13 +99,13 @@ function Orders() {
                                 <h2 className="text-xl font-semibold mb-2">Order #{order.id}</h2>
                                 <p className="text-gray-600 mb-2">Date: {new Date(order.orderDate).toLocaleDateString()}</p>
                                 <p className="text-gray-600 mb-4">Status: {order.status}</p>
-                                <h3 className="text-lg font-semibold mb-2">Total Unique Items: {uniqueItemCount}</h3> {/* Display total unique item count */}
+                                <h3 className="text-lg font-semibold mb-2">Total Unique Items: {uniqueItemCount}</h3>
 
                                 <h3 className="text-lg font-semibold mb-2">Items:</h3>
                                 <ul className="list-none mb-4">
                                     {order.itemIds && order.itemIds.length > 0 ? (
                                         order.itemIds.map((item) => {
-                                            const [id, name, price, imageUrl] = item.split('|'); // Adjust to include quantity
+                                            const [id, name, price, imageUrl] = item.split('|');
                                             return (
                                                 <li key={id} className="flex items-center mb-4">
                                                     <img
@@ -122,6 +131,7 @@ function Orders() {
                     })}
                 </div>
             )}
+            <ToastContainer /> {/* Add the ToastContainer here */}
         </div>
     );
 }
