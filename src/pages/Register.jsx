@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api'; 
-import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
-import 'react-toastify/dist/ReactToastify.css'; // Import styles for toast notifications
+import { ToastContainer, toast } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css'; 
 
 function Register() {
   const [email, setEmail] = useState('');
@@ -13,11 +13,11 @@ function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  // Function to check if email already exists
+  
   const checkEmailExists = async () => {
     try {
       const response = await api.get('/api/auth/check-email', { params: { email } });
-      return response.data; // true if email exists, false otherwise
+      return response.data; 
     } catch (error) {
       console.error('Error checking email:', error);
       return false; 
@@ -27,22 +27,22 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Check if email already exists before registration
+    
     const emailExists = await checkEmailExists();
     if (emailExists) {
       setEmailError('Email is already registered.');
-      toast.error('Email is already registered.'); // Toast for existing email
+      toast.error('Email is already registered.'); 
       return; 
     }
     
-    setEmailError(''); // Clear any previous error
+    setEmailError(''); 
 
     const success = await register(email, password, fullName);
     if (success) {
-      toast.success('Registration successful! Please login.'); // Toast for success
+      toast.success('Registration successful! Please login.'); 
       navigate('/login');
     } else {
-      toast.error('Registration failed. Please try again.'); // Toast for failure
+      toast.error('Registration failed. Please try again.'); 
     }
   };
 
@@ -88,7 +88,7 @@ function Register() {
           Register
         </button>
       </form>
-      <ToastContainer /> {/* Add the ToastContainer here */}
+      <ToastContainer /> 
     </div>
   );
 }
