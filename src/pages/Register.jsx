@@ -1,94 +1,121 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import api from '../services/api'; 
-import { ToastContainer, toast } from 'react-toastify'; 
-import 'react-toastify/dist/ReactToastify.css'; 
+import api from '../services/api';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import img from '../asset/img5.png';
 
 function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
-  const [emailError, setEmailError] = useState(''); 
+  const [emailError, setEmailError] = useState('');
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const checkEmailExists = async () => {
     try {
       const response = await api.get('/api/auth/check-email', { params: { email } });
-      return response.data; 
+      return response.data;
     } catch (error) {
       console.error('Error checking email:', error);
-      return false; 
+      return false;
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    
+
+    // Validate email format
+    if (!validateEmail(email)) {
+      setEmailError('Please enter a valid email address.');
+      toast.error('Please enter a valid email address.');
+      return;
+    }
+
     const emailExists = await checkEmailExists();
     if (emailExists) {
       setEmailError('Email is already registered.');
-      toast.error('Email is already registered.'); 
-      return; 
+      toast.error('Email is already registered.');
+      return;
     }
     
-    setEmailError(''); 
+    setEmailError('');
 
     const success = await register(email, password, fullName);
     if (success) {
-      toast.success('Registration successful! Please login.'); 
+      toast.success('Registration successful! Please login.');
       navigate('/login');
     } else {
-      toast.error('Registration failed. Please try again.'); 
+      toast.error('Registration failed. Please try again.');
     }
   };
 
   return (
-    <div className="max-w-md mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Register</h1>
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
-        <div className="mb-4">
-          <label htmlFor="fullName" className="block text-gray-700 mb-2">Full Name</label>
-          <input
-            type="text"
-            id="fullName"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-700 mb-2">Email</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className={`w-full px-3 py-2 border rounded-lg ${emailError ? 'border-red-500' : ''}`}
-            required
-          />
-          {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
-        </div>
-        <div className="mb-4">
-          <label htmlFor="password" className="block text-gray-700 mb-2">Password</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg"
-            required
-          />
-        </div>
-        <button type="submit" className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600">
-          Register
-        </button>
-      </form>
-      <ToastContainer /> 
+    <div className="flex h-screen bg-gray-200 rounded-lg shadow-lg">
+      <div className="w-1/2 p-8 flex flex-col justify-center">
+        <h1 className="text-5xl font-bold mb-4 text-center">Register</h1>
+        <p className="text-gray-600 mb-8 text-center">Create your account</p>
+        
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="fullName" className="sr-only">Full Name</label>
+            <input
+              type="text"
+              id="fullName"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              className="w-full p-3 rounded-lg bg-white border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Full Name"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="email" className="sr-only">Email</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={`w-full p-3 rounded-lg bg-white border ${emailError ? 'border-red-500' : 'border-gray-300'} placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
+              placeholder="Email address"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="password" className="sr-only">Password</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-3 rounded-lg bg-white border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Password"
+              required
+            />
+          </div>
+
+          {emailError && <p className="text-red-500 text-sm mt-2">{emailError}</p>}
+
+          <div>
+            <button type="submit" className="w-full bg-green-600 text-white p-3 rounded-lg font-semibold hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+              Register
+            </button>
+          </div>
+        </form>
+      </div>
+      
+      <div className="w-1/2 bg-orange-100 flex items-center justify-center">
+        <img src={img} alt="Astronaut illustration" className="max-w-full max-h-full object-contain" />
+      </div>
+
+      <ToastContainer />
     </div>
   );
 }

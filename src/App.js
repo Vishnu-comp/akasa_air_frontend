@@ -5,51 +5,20 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Cart from './pages/Cart';
 import Orders from './pages/Orders';
-import HomePage from './pages/Homepage'; // Assuming you want HomePage here
-import PrivateRoute from './components/PrivateRoute'; 
+import HomePage from './pages/Homepage';
+import PrivateRoute from './components/PrivateRoute';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
-import Inventory from './pages/Inventory'; // Import CartProvider
-//import NotFound from './pages/NotFound'; // For 404 handling
+import Inventory from './pages/Inventory';
 
-// function App() {
-//   return (
-//     <AuthProvider>
-//       <CartProvider> {/* Ensure CartProvider wraps the app */}
-//         <Router>
-//           <div className="min-h-screen bg-gray-100">
-//             <Navbar />
-//             <div className="container mx-auto px-4 py-8">
-//               <Routes>
-//                 {/* Public Routes */}
-//                 <Route path="/" element={<HomePage />} />
-//                 <Route path="/login" element={<Login />} />
-//                 <Route path="/register" element={<Register />} />
-//                 <Route path="/inventory" element={<Inventory />} />
-
-
-//                 {/* Private Routes */}
-//                 <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
-//                 <Route path="/orders" element={<PrivateRoute><Orders /></PrivateRoute>} />
-
-//                 {/* 404 Route */}
-//                 {/* <Route path="*" element={<NotFound />} /> */}
-//               </Routes>
-//             </div>
-//           </div>
-//         </Router>
-//       </CartProvider>
-//     </AuthProvider>
-//   );
-// }
 function App() {
   return (
     <AuthProvider>
       <CartProvider>
         <Router>
-          <div className="min-h-screen"> {/* Remove bg-gray-100 */}
+          <div className="flex flex-col min-h-screen">
             <Navbar />
-            <div className="container mx-auto px-4 py-8">
+            <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
               <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<HomePage />} />
@@ -60,18 +29,16 @@ function App() {
                 {/* Private Routes */}
                 <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
                 <Route path="/orders" element={<PrivateRoute><Orders /></PrivateRoute>} />
-
-                {/* 404 Route */}
-                {/* <Route path="*" element={<NotFound />} /> */}
               </Routes>
-            </div>
+            </main>
+            <footer className="bg-gray-800 text-white text-center py-4">
+              MADE BY VISHNU NAIR
+            </footer>
           </div>
         </Router>
       </CartProvider>
     </AuthProvider>
   );
 }
-
-
 
 export default App;
