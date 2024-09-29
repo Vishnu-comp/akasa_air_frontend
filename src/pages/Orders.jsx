@@ -167,7 +167,7 @@ const OrderCard = ({ order }) => {
         <span className="text-sm text-gray-500">{new Date(order.orderDate).toLocaleString()}</span>
       </div>
       {order.itemIds.map((item, index) => {
-        const [id, name, price, imageUrl] = item.split('|');
+        const [ name, price, imageUrl] = item.split('|');
         return (
           <div key={index} className="flex items-center mb-2">
             <img src={imageUrl} alt={name} className="w-16 h-16 object-cover rounded-full mr-4" />
