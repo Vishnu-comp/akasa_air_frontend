@@ -35,9 +35,10 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100 rounded-lg shadow-lg">
-      <div className="w-1/2 p-8 flex flex-col justify-center">
-        <h1 className="text-5xl font-bold mb-4 text-center">Welcome</h1>
+    <div className="flex flex-col md:flex-row h-screen bg-gray-100 rounded-lg shadow-lg">
+      {/* Left side (form) */}
+      <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
+        <h1 className="text-3xl md:text-5xl font-bold mb-4 text-center">Welcome</h1>
         <p className="text-gray-600 mb-8 text-center">We are glad to see you back with us</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -65,14 +66,14 @@ const LoginPage = () => {
               required
             />
           </div>
-          <button type="submit" className="w-full bg-black text-white p-3 rounded-lg font-semibold">
-            NEXT
+          <button type="submit" className="w-full bg-orange-500 text-white p-3 rounded-lg font-semibold">
+            LOGIN
           </button>
         </form>
-
       </div>
 
-      <div className="w-1/2 flex items-center justify-center">
+      {/* Right side (image) */}
+      <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-0">
         <img src={img1} alt="" className="max-w-full max-h-full object-contain" />
       </div>
 

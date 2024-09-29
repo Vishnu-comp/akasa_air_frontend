@@ -58,9 +58,10 @@ function Register() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-200 rounded-lg shadow-lg">
-      <div className="w-1/2 p-8 flex flex-col justify-center">
-        <h1 className="text-5xl font-bold mb-4 text-center">Register</h1>
+    <div className="flex flex-col md:flex-row h-screen bg-gray-200 rounded-lg shadow-lg">
+      {/* Left side (form) */}
+      <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
+        <h1 className="text-3xl md:text-5xl font-bold mb-4 text-center">Register</h1>
         <p className="text-gray-600 mb-8 text-center">Create your account</p>
         
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -104,14 +105,15 @@ function Register() {
           {emailError && <p className="text-red-500 text-sm mt-2">{emailError}</p>}
 
           <div>
-            <button type="submit" className="w-full bg-green-600 text-white p-3 rounded-lg font-semibold hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+            <button type="submit" className="w-full bg-orange-500 text-white p-3 rounded-lg font-semibold  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
               Register
             </button>
           </div>
         </form>
       </div>
       
-      <div className="w-1/2 bg-orange-100 flex items-center justify-center">
+      {/* Right side (image) */}
+      <div className="w-full md:w-1/2 bg-orange-100 flex items-center justify-center p-4 md:p-0">
         <img src={img} alt="Astronaut illustration" className="max-w-full max-h-full object-contain" />
       </div>
 
