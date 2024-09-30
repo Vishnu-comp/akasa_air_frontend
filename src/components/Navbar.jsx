@@ -26,8 +26,8 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center py-4">
         <Link to="/" className="flex items-center text-xl font-bold text-orange-500">
-      <img src={img} alt="Food Delivery Logo" className="h-8 w-8 mr-2" /> {/* Adjust size as needed */}
-      FoodDelivery
+      <img src={img} alt="Food Order Logo" className="h-8 w-8 mr-2" /> {/* Adjust size as needed */}
+      Akasa Air Food Order
     </Link>
 
           {/* Mobile menu button */}

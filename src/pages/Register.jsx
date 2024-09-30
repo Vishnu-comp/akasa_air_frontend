@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -109,9 +109,18 @@ function Register() {
               Register
             </button>
           </div>
+
+          {/* Sign in link */}
+          <div className="text-center mt-4">
+            <p className="text-gray-600">Already have an account?{' '}
+              <Link to="/login" className="text-orange-500 font-semibold hover:underline">
+                Sign in here
+              </Link>
+            </p>
+          </div>
         </form>
       </div>
-      
+
       {/* Right side (image) */}
       <div className="w-full md:w-1/2 bg-orange-100 flex items-center justify-center p-4 md:p-0">
         <img src={img} alt="Astronaut illustration" className="max-w-full max-h-full object-contain" />

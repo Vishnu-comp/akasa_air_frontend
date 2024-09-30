@@ -6,6 +6,7 @@ import Register from './pages/Register';
 import Cart from './pages/Cart';
 import Orders from './pages/Orders';
 import HomePage from './pages/Homepage';
+import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import PrivateRoute from './components/PrivateRoute';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
@@ -31,9 +32,29 @@ function App() {
                 <Route path="/orders" element={<PrivateRoute><Orders /></PrivateRoute>} />
               </Routes>
             </main>
-            <footer className="bg-gray-800 text-white text-center py-4">
-              MADE BY VISHNU NAIR
-            </footer>
+            <footer className="bg-orange-500 text-white text-center py-4">
+      <div>
+        <span>MADE BY VISHNU NAIR</span>
+      </div>
+      <div className="flex justify-center space-x-2 mt-2">
+        <a
+          href="https://github.com/Vishnu-comp"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-gray-400"
+        >
+          <FaGithub size={30} />
+        </a>
+        <a
+          href="https://www.linkedin.com/in/vishnu-nair-aa462b245/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-gray-400"
+        >
+          <FaLinkedin size={30} />
+        </a>
+      </div>
+    </footer>
           </div>
         </Router>
       </CartProvider>

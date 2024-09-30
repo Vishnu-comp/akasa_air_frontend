@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';  // Import Link
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import img1 from '../asset/img4.png';
@@ -19,7 +19,6 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if the email is valid
     if (!validateEmail(email)) {
       toast.error('Please enter a valid email address.');
       return;
@@ -36,7 +35,6 @@ const LoginPage = () => {
 
   return (
     <div className="flex flex-col md:flex-row h-screen bg-gray-100 rounded-lg shadow-lg">
-      {/* Left side (form) */}
       <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
         <h1 className="text-3xl md:text-5xl font-bold mb-4 text-center">Welcome</h1>
         <p className="text-gray-600 mb-8 text-center">We are glad to see you back with us</p>
@@ -70,11 +68,19 @@ const LoginPage = () => {
             LOGIN
           </button>
         </form>
+
+        {/* Add the sign-up text and link */}
+        <div className="text-center mt-4">
+          <p className="text-gray-600">Don't have an account?{' '}
+            <Link to="/register" className="text-orange-500 font-semibold hover:underline">
+              Sign up here
+            </Link>
+          </p>
+        </div>
       </div>
 
-      {/* Right side (image) */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-0">
-        <img src={img1} alt="" className="max-w-full max-h-full object-contain" />
+        <img src={img1} alt="Login illustration" className="max-w-full max-h-full object-contain" />
       </div>
 
       <ToastContainer />

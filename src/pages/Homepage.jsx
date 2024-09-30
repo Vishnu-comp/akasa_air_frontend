@@ -195,7 +195,7 @@ const ItemsGrid = ({ items, searchQuery, selectedCategory, addToCart }) => (
             <h3 className="font-semibold text-lg mb-1">{item.category}</h3>
             <div className="flex items-center mb-1">
               {[...Array(5)].map((_, index) => (
-                <FaStar key={index} color={index < item.rating ? "#ffc107" : "#e4e5e9"} />
+                <FaStar key={index} color={index < 4 ? "#ffc107" : "#e4e5e9"} />
               ))}
             </div>
             <div className="flex flex-col sm:flex-row justify-between items-center mt-2">
