@@ -1,70 +1,143 @@
-# Getting Started with Create React App
+# Food Ordering Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A web application designed for users to browse food inventory, manage their cart, and place orders seamlessly. The application features a frontend built with React and a backend developed using Spring Boot with MongoDB.
 
-## Available Scripts
+## Table of Contents
 
-In the project directory, you can run:
+- [Design Overview](#design-overview)
+- [Technologies Used](#technologies-used)
+- [Frontend Implementation](#frontend-implementation)
+- [Backend Implementation](#backend-implementation)
+- [Deployment](#deployment)
+- [Requirement Details Analysis](#requirement-details-analysis)
+- [Contributing](#contributing)
+- [License](#license)
 
-### `npm start`
+## Design Overview
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+The architecture of the Food Ordering Platform is divided into two main components: the **Frontend** and the **Backend**. Each component has a clear separation of concerns, ensuring maintainability and scalability.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Frontend (React)
 
-### `npm test`
+- **Technology Stack**: 
+  - React (JavaScript framework)
+  - React Router for navigation
+  - Axios for API requests
+  - Tailwind CSS for styling
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Key Components**:
+  - **Navbar**: Displays navigation options (Login, Register, Browse Inventory, Cart).
+  - **Login/Register Pages**: Allow users to sign in and sign up with email and password.
+  - **Inventory Page**: Displays items grouped by categories (e.g., Veg, Non-Veg).
+  - **Cart Page**: Shows items added to the user's cart and allows modifications.
+  - **Orders Page**: Displays the user's order history and order statuses.
 
-### `npm run build`
+- **State Management**: Context API is used for managing authentication (AuthContext) and cart data (CartContext).
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Backend (Spring Boot & MongoDB)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **Technology Stack**: 
+  - Spring Boot for RESTful APIs
+  - MongoDB for data persistence
+  - JWT for authentication
+  - BCrypt for password hashing
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Key Modules**:
+  - **User Authentication**: Handles user registration and login.
+  - **Inventory Management**: Provides endpoints to manage inventory items.
+  - **Cart Management**: Manages user cart operations.
+  - **Order Processing**: Handles checkout and order history.
 
-### `npm run eject`
+- **Security**: Spring Security is configured to secure routes except for authentication endpoints.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Technologies Used
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **Frontend**: React, React Router, Axios, Tailwind CSS
+- **Backend**: Spring Boot, MongoDB, JWT, BCrypt
+- **Deployment**: Render, Netlify, Vercel
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Frontend Implementation
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Component Structure
 
-## Learn More
+- `App.jsx`: Main entry point with routing and layout components.
+- `Login.jsx` and `Register.jsx`: Forms for user authentication.
+- `Inventory.jsx`: Fetches available items from the backend.
+- `Cart.jsx`: Manages user cart items and syncs data with the backend.
+- `Orders.jsx`: Displays the user's past orders.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Key Libraries
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- **React Router**: For navigation.
+- **Axios**: For HTTP requests.
+- **Tailwind CSS**: For responsive UI design.
 
-### Code Splitting
+## Backend Implementation
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Controller Layer
 
-### Analyzing the Bundle Size
+- `AuthController`: Manages login and registration.
+- `CartController`: Manages cart operations.
+- `OrderController`: Handles checkout processes.
+- `InventoryController`: Manages the item inventory.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Service Layer
 
-### Making a Progressive Web App
+- `AuthService`: Validates user data and communicates with UserRepository.
+- `CartService`: Manages cart operations and persistence.
+- `OrderService`: Handles order creation and history retrieval.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Repository Layer
 
-### Advanced Configuration
+- `UserRepository`: Manages user data.
+- `ItemRepository`: Handles item stock updates.
+- `OrderRepository`: Manages order history.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Security
 
-### Deployment
+Configured with Spring Security and JWT for secure route access.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Deployment
 
-### `npm run build` fails to minify
+- Backend: [Render](https://render-web.onrender.com/)
+- Frontend: [Netlify](https://www.netlify.com/) & [Vercel](https://vercel.com/)
+- Overall Deployment Links:
+  - [Netlify](https://vishnunair-akasaair-fd.netlify.app/)
+  - [Vercel](https://vishnunairakasaairfd.vercel.app/)
+  - Manage Inventory: [Inventory Page](https://vishnunairakasaairfd.vercel.app/inventory)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Requirement Details Analysis
+
+### User Registration and Authentication
+
+- **Registration**: Implemented with a POST request to `/api/auth/register` to save user details in MongoDB.
+- **Authentication**: Verifies credentials and generates a JWT token upon successful login.
+
+### Browse Item Inventory
+
+- **Category Browsing**: Users can filter items by categories through the InventoryController.
+- **Creative Display**: Items are displayed with images, prices, and availability.
+
+### Selection Basket/Cart
+
+1. **Add to Cart**: Items can be added via a POST request to `/api/cart/add/{userEmail}`.
+2. **Stock Check on Checkout**: CartService checks item availability before purchase confirmation.
+3. **Persistent Cart**: Cart data is saved in the database for user accessibility across sessions.
+4. **Edge Case Handling**: Errors during cart management are appropriately handled.
+5. **Multi-Device Login**: Cart is accessible across devices tied to the user's email.
+
+### Checkout
+
+- **Total Breakdown**: Checkout page summarizes items and costs.
+- **Transaction Success**: Successful orders generate an order ID stored in MongoDB.
+- **Unavailable Items Handling**: Users are notified of unavailable items during checkout.
+- **Order Deduction**: Stock is updated only after successful checkout.
+- **Order History**: Users can view order history via GET request to `/api/order/user/{email}`.
+
+## Contributing
+
+Contributions are welcome! Please feel free to open issues or submit pull requests.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
