@@ -1,4 +1,4 @@
-# Food Ordering Platform
+# Akasa Air Food Ordering Platform
 
 A web application designed for users to browse food inventory, manage their cart, and place orders seamlessly. The application features a frontend built with React and a backend developed using Spring Boot with MongoDB.
 
