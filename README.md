@@ -11,8 +11,7 @@ A web application designed for users to browse food inventory, manage their cart
 - [How to Run](#how-to-run)
 - [Deployment](#deployment)
 - [Requirement Details Analysis](#requirement-details-analysis)
-- [Contributing](#contributing)
-- [License](#license)
+
 
 ## Design Overview
 
@@ -190,10 +189,4 @@ Replace `your_jwt_secret_key` with a secure random string.
 - **Order Deduction**: Stock is updated only after successful checkout.
 - **Order History**: Users can view order history via GET request to `/api/order/user/{email}`.
 
-## Contributing
 
-Contributions are welcome! Please feel free to open issues or submit pull requests.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
