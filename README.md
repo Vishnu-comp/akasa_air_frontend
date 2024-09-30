@@ -1,5 +1,7 @@
 # Akasa Air Food Ordering Platform
 
+For frontend repository visit here Backend: [Backend Repository](https://github.com/Vishnu-comp/akasa_air_backend)
+
 A web application designed for users to browse food inventory, manage their cart, and place orders seamlessly. The application features a frontend built with React and a backend developed using Spring Boot with MongoDB.
 
 ## Table of Contents
