@@ -33,6 +33,13 @@ const Inventory = () => {
 
   const handleAddItem = async (e) => {
     e.preventDefault();
+
+    // Validate stock and quantity values
+    if (form.stock < 0 || form.quantity < 0) {
+      toast.error('Stock and quantity cannot be negative.');
+      return;
+    }
+
     try {
       if (isEdit) {
         await api.put(`/api/inventory/update`, { ...form, id: editItemId });
@@ -124,7 +131,13 @@ const Inventory = () => {
             <input
               type="number"
               value={form.stock || ''}
-              onChange={(e) => setForm({ ...form, stock: parseInt(e.target.value) })}
+              onChange={(e) => {
+                const value = parseInt(e.target.value);
+                // Ensure stock is non-negative
+                if (value >= 0) {
+                  setForm({ ...form, stock: value });
+                }
+              }}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
               required
             />
@@ -134,7 +147,13 @@ const Inventory = () => {
             <input
               type="number"
               value={form.quantity || ''}
-              onChange={(e) => setForm({ ...form, quantity: parseInt(e.target.value) })}
+              onChange={(e) => {
+                const value = parseInt(e.target.value);
+                // Ensure quantity is non-negative
+                if (value >= 0) {
+                  setForm({ ...form, quantity: value });
+                }
+              }}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
               required
             />
