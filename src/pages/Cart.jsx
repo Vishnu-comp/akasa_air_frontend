@@ -179,7 +179,7 @@ const Cart = () => {
         <button className="text-gray-600" onClick={handleRedirect}>
           <ArrowLeft size={24} />
         </button>
-        <h1 className="text-lg font-semibold">Food Card Cart</h1>
+        <h1 className="text-lg font-semibold">Food Item Cart</h1>
         <ShoppingBag size={24} className="text-orange-500" />
       </div>
 
