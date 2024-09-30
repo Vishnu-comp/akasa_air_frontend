@@ -8,6 +8,7 @@ A web application designed for users to browse food inventory, manage their cart
 - [Technologies Used](#technologies-used)
 - [Frontend Implementation](#frontend-implementation)
 - [Backend Implementation](#backend-implementation)
+- [How to Run](#how-to-run)
 - [Deployment](#deployment)
 - [Requirement Details Analysis](#requirement-details-analysis)
 - [Contributing](#contributing)
@@ -96,6 +97,61 @@ The architecture of the Food Ordering Platform is divided into two main componen
 ### Security
 
 Configured with Spring Security and JWT for secure route access.
+
+## How to Run
+
+### Prerequisites
+
+- Node.js and npm installed
+- Java Development Kit (JDK) 11 or later
+- MongoDB installed and running
+
+### Frontend Setup
+
+1. Navigate to the frontend directory:
+   ```
+   cd frontend
+   ```
+2. Install dependencies:
+   ```
+   npm install
+   ```
+3. Start the development server:
+   ```
+   npm start
+   ```
+   The frontend will be available at `http://localhost:3000`.
+
+### Backend Setup
+
+1. Navigate to the backend directory:
+   ```
+   cd backend
+   ```
+2. Build the project:
+   ```
+   ./mvnw clean install
+   ```
+3. Run the Spring Boot application:
+   ```
+   ./mvnw spring-boot:run
+   ```
+   The backend will start on `http://localhost:8080`.
+
+### Environment Configuration
+
+Create a `.env` file in the frontend directory with the following content:
+```
+REACT_APP_API_URL=http://localhost:8080/api
+```
+
+Create an `application.properties` file in the `src/main/resources` directory of the backend with:
+```
+spring.data.mongodb.uri=mongodb://localhost:27017/food_ordering_db
+jwt.secret=your_jwt_secret_key
+```
+
+Replace `your_jwt_secret_key` with a secure random string.
 
 ## Deployment
 
